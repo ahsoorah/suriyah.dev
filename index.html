@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>suriyah.dev</title>
+<meta name="description" content="suriyah saravanan - MIS, cybersecurity">
+<meta property="og:title" content="suriyah.dev | cybersecurity, automation, AI">
+<meta property="og:description" content="hi, i'm suriyah">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://suriyah.dev/">
+<meta property="og:image" content="https://raw.githubusercontent.com/ahsoorah/suriyah.dev/refs/heads/main/s-zoomout.png">
+<meta property="og:site_name" content="suriyah.dev">
+<meta name="theme-color" content="#4a020f"> 
+
+  
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="suriyah.dev | cybersecurity, automation, AI">
+<meta name="twitter:description" content="hi, i'm suriyah">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ahsoorah/suriyah.dev/refs/heads/main/s-zoomout.png">
+
+<link rel="icon" type="image/png" href="/s-transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+  :root{
+    --bg: #0a0a0b;
+    --bg-elevated: #111113;
+    --surface: #151517;
+    --border: #241417;
+    --border-hover: #4a1218;
+    --maroon: #3a0d12;
+    --crimson: #4a020f;
+    --crimson-bright: #e0273f;
+    --text: #ece9e6;
+    --text-dim: #8c8a88;
+    --text-faint: #706e6c;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+
+  
+  html{ 
+    scroll-behavior:smooth; 
+    background: var(--bg);
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--display);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    min-height: 100vh; 
+  }
+
+  /* lock scrolling while encryption is active */
+  body.locked {
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  ::selection{ background:var(--crimson); color:#fff; }
+
+  :focus-visible{
+    outline:2px solid var(--crimson-bright);
+    outline-offset:3px;
+  }
+
+  .sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+
+  #decrypt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(10, 10, 11, 0.85); 
+    backdrop-filter: blur(3px) grayscale(50%); 
+    -webkit-backdrop-filter: blur(3px) grayscale(50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
+  }
+  
+  #decrypt-overlay h2 {
+    font-family: var(--mono);
+    font-size: clamp(18px, 4vw, 24px);
+    color: var(--crimson-bright);
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  #decrypt-overlay p {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+
+  [data-decrypt]:not(.decrypted) {
+    font-family: var(--mono) !important;
+    opacity: 0.6; 
+    transition: opacity 0.3s ease;
+  }
+  
+  [data-decrypt].decrypted {
+    opacity: 1;
+  }
+
+  /* background texture */
+  .grid-bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background-image:
+      linear-gradient(rgba(168,24,46,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,24,46,0.055) 1px, transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+    pointer-events:none;
+  }
+
+  
+  .glow{
+    position:fixed;
+    top:-20%;
+    left:50%;
+    transform:translateX(-50%);
+    width:900px;
+    height:600px;
+    background:radial-gradient(ellipse at center, rgba(168,24,46,0.16), transparent 65%);
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* scan line */
+  .scanline{
+    position:absolute;
+    left:0; right:0;
+    height:2px;
+    top:0;
+    background:linear-gradient(90deg, transparent, var(--crimson-bright), transparent);
+    box-shadow:0 0 20px 2px rgba(224,39,63,0.6);
+    z-index:9998;
+    pointer-events:none;
+    opacity:0;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:920px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  @keyframes pulse{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.35; }
+  }
+
+  /* hero */
+  .hero{
+    padding:96px 0 88px;
+    border-bottom:1px solid var(--border);
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    color:var(--crimson-bright);
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+
+  
+  h1{
+    font-size:clamp(40px, 7vw, 72px);
+    font-weight:700;
+    letter-spacing:-0.02em;
+    line-height:1.02;
+    margin-bottom:24px;
+  }
+  h1 .cursor, #decrypt-overlay h2 .cursor{
+    display:inline-block;
+    width:0.5ch;
+    background:var(--crimson-bright);
+    margin-left:4px;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{
+    0%,49%{ opacity:1; }
+    50%,100%{ opacity:0; }
+  }
+
+  .hero p{
+    max-width:520px;
+    color:var(--text-dim);
+    font-size:20px;
+    line-height:1.7;
+  }
+
+  .hero p strong{
+    color:var(--text);
+    font-weight:500;
+  }
+
+  /* sections */
+  section{
+    padding:72px 0;
+    border-bottom:1px solid var(--border);
+  }
+
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:36px;
+  }
+
+  .section-title{
+    font-size:26px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  .section-note{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text-faint);
+    letter-spacing:0.05em;
+  }
+
+
+  .access-shell{
+    position:relative;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    overflow:hidden;
+  }
+
+  @media (max-width:640px){
+    .grid{ grid-template-columns:1fr; }
+  }
+
+  .card{
+    background:var(--bg-elevated);
+    padding:26px 24px;
+    position:relative;
+    transition:background 0.25s ease, opacity 0.5s ease, transform 0.5s ease;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    opacity:0;
+    transform:translateY(14px);
+  }
+
+  .grid.revealed .card{ opacity:1; transform:translateY(0); }
+  .grid.revealed .card:nth-child(1){ transition-delay:0.05s; }
+  .grid.revealed .card:nth-child(2){ transition-delay:0.1s; }
+  .grid.revealed .card:nth-child(3){ transition-delay:0.15s; }
+  .grid.revealed .card:nth-child(4){ transition-delay:0.2s; }
+
+  
+  /* firewall overlay */
+  .firewall{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    overflow:hidden;
+    text-align:center;
+    user-select:none;
+    background:#000000;
+    border:1px solid var(--crimson);
+    transition:opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .firewall-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    opacity: 0.9;
+  }
+
+  .firewall-content{
+    position:relative;
+    z-index:3;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:9px;
+    padding:24px 34px;
+    background:radial-gradient(ellipse at center, rgba(10,4,3,0.72) 0%, transparent 75%);
+  }
+
+  
+  .firewall-label{
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.16em;
+    color:#ffb199;
+  }
+
+  .firewall-cta{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(19px, 4vw, 27px);
+    color:#fdfaf9;
+    text-shadow:0 0 22px rgba(224,39,63,0.75);
+    transition:color 0.2s ease, text-shadow 0.2s ease;
+  }
+
+  .firewall:hover .firewall-cta{
+    color:#fff;
+    text-shadow:0 0 30px rgba(224,39,63,1);
+  }
+
+  .firewall-flash{
+    position:absolute;
+    inset:0;
+    z-index:4;
+    background:radial-gradient(circle, rgba(255,255,255,0.95), rgba(224,39,63,0.65) 42%, transparent 72%);
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .firewall.flare{ animation:shake 0.4s ease-in-out; }
+  .firewall.flare .firewall-flash{ animation:flashPulse 0.55s ease-out forwards; }
+
+  @keyframes shake{
+    0%,100%{ transform:translate(0,0); }
+    20%{ transform:translate(-4px,2px); }
+    40%{ transform:translate(4px,-2px); }
+    60%{ transform:translate(-3px,1px); }
+    80%{ transform:translate(3px,-1px); }
+  }
+
+  @keyframes flashPulse{
+    0%{ opacity:0; transform:scale(0.3); }
+    40%{ opacity:1; transform:scale(1); }
+    100%{ opacity:0; transform:scale(1.5); }
+  }
+
+  .firewall.gone{
+    opacity:0;
+    transform:scale(1.04);
+    pointer-events:none;
+  }
+
+  .card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:2px;
+    background:var(--crimson);
+    transform:scaleY(0);
+    transform-origin:top;
+    transition:transform 0.3s ease;
+  }
+
+  .card:hover, .card:focus-visible{ background:var(--surface); }
+  .card:hover::before, .card:focus-visible::before{ transform:scaleY(1); }
+
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .port{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--crimson-bright);
+    letter-spacing:0.05em;
+  }
+
+  .arrow{
+    font-family:var(--mono);
+    color:var(--text-faint);
+    font-size:14px;
+    transition:transform 0.25s ease, color 0.25s ease;
+  }
+  .card:hover .arrow, .card:focus-visible .arrow{
+    transform:translate(3px,-3px);
+    color:var(--crimson-bright);
+  }
+
+  
+  .card-title{
+    font-size:22px;
+    font-weight:600;
+  }
+
+  .card-desc{
+    font-size:15px;
+    color:var(--text-dim);
+    line-height:1.55;
+  }
+
+  /* footer */
+  footer{
+    padding:40px 0 60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+
+  .footer-left{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text-faint);
+    letter-spacing:0.03em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .grid .card{ opacity:1; transform:none; }
+    .firewall{ display:none !important; }
+    #decrypt-overlay { display:none !important; }
+    body.locked { overflow: auto; height: auto; }
+  }
+  .site-logo {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    z-index: 1000;
+    transition: transform 0.2s ease;
+  }
+
+  .site-logo img {
+    width: 38px; 
+    height: auto;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+  }
+
+  .site-logo:hover {
+    transform: scale(1.05);
+  }
+
+  .site-logo:hover img {
+    opacity: 1;
+  }
+
+  @media (max-width: 1050px) {
+    .site-logo {
+      top: 16px;
+      left: 16px;
+    }
+    .site-logo img {
+      width: 28px;
+    }
+  }
+</style>
+  
+</head>
+<body class="locked">
+
+<a href="/" class="site-logo">
+  <img src="/s-transparent.png" alt="suriyah.dev logo">
+</a>
+
+<div id="decrypt-overlay" role="button" tabindex="0" aria-label="Tap to decrypt page">
+  
+  <h2>AES-256 ENCRYPTED<span class="cursor"></span></h2>
+  <p>tap to decrypt page</p>
+</div>
+
+<div class="grid-bg"></div>
+<div class="glow"></div>
+<div class="scanline"></div>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow" data-decrypt>cybersecurity &nbsp;·&nbsp; AI &nbsp;·&nbsp; python &nbsp;·&nbsp; bash</div>
+    <h1><span data-decrypt>suriyah </span><span data-decrypt style="color: var(--crimson);">saravanan</span><span class="cursor"></span></h1>
+    <p><span data-decrypt>i study how systems fail and are bottlenecked, and engineer solutions that keep them from failing quietly and improve efficiency.</span> <strong><span data-decrypt>management information systems</span></strong> <span data-decrypt>major,</span> <strong><span data-decrypt>cybersecurity</span></strong> <span data-decrypt>focus; i bring with me a strong aptitude for automation, access management, and detection engineering</span></p>
+  </section>
+
+  <section id="access">
+    <div class="section-head">
+      <div class="section-title" data-decrypt>access points</div>
+      <div class="section-note" data-decrypt>4 found</div>
+    </div>
+    <div class="access-shell">
+      <div class="grid" id="portsGrid">
+
+        <a class="card" href="./projects/">
+          <div class="card-top"><span class="port" data-decrypt>port 22</span><span class="arrow">↗</span></div>
+          <div class="card-title" data-decrypt>projects</div>
+          <div class="card-desc" data-decrypt>security tools, automation, experiments, and builds</div>
+        </a>
+
+        
+        <a class="card" href="./writing/">
+          <div class="card-top"><span class="port" data-decrypt>port 80</span><span class="arrow">↗</span></div>
+          <div class="card-title" data-decrypt>writing</div>
+          <div class="card-desc" data-decrypt>technical research papers pertaining to MIS and cybersecurity</div>
+        </a>
+
+        <a class="card" href="./resume/">
+          <div class="card-top"><span class="port" data-decrypt>port 21</span><span class="arrow">↗</span></div>
+          <div class="card-title" data-decrypt>resume</div>
+          <div class="card-desc" data-decrypt>myself and my experience</div>
+        </a>
+
+        <a class="card" id="contact" href="./contact/">
+          <div class="card-top"><span class="port" data-decrypt>port 25</span><span class="arrow">↗</span></div>
+          <div class="card-title" data-decrypt>contact</div>
+          <div class="card-desc" data-decrypt>direct contact for opportunities, questions, or collaboration</div>
+        </a>
+
+        
+      </div>
+
+      <div class="firewall" id="firewall" role="button" tabindex="0" aria-label="Tap to breach the firewall and reveal access points">
+        <video autoplay muted playsinline loop class="firewall-video">
+          <source src="/firewall.mp4" type="video/mp4">
+        </video>
+        <div class="firewall-content">
+          <div class="firewall-label" data-decrypt>firewall: ACTIVE</div>
+          <div class="firewall-cta" data-decrypt>tap to breach</div>
+        </div>
+        <div class="firewall-flash"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left" data-decrypt>© 2026 suriyah saravanan</div>
+  </footer>
+
+</div>
+
+<script>
+  // force browser to start at the top on every refresh
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasUnlocked = sessionStorage.getItem('site_unlocked'); // CHECK FOR TOKEN
+    
+    const overlay = document.getElementById('decrypt-overlay');
+    const scanline = document.querySelector('.scanline');
+    const targets = document.querySelectorAll('[data-decrypt]');
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+    
+    const firewall = document.getElementById('firewall');
+    const grid = document.getElementById('portsGrid');
+
+    if (prefersReduced || hasUnlocked) {
+      if (overlay) overlay.style.display = 'none';
+      document.body.classList.remove('locked');
+      
+      targets.forEach(el => {
+        const originalText = el.dataset.original || el.textContent;
+        el.dataset.original = originalText;
+        el.textContent = originalText;
+        el.classList.add('decrypted');
+      });
+      
+      if (firewall && grid) {
+        firewall.style.display = 'none';
+        grid.classList.add('revealed');
+      }
+      return;
+    }
+
+    window.scrollTo(0, 0);
+
+    targets.forEach(el => {
+      el.dataset.original = el.textContent;
+      el.setAttribute('aria-hidden', 'true');
+      const srSpan = document.createElement('span');
+      srSpan.className = 'sr-only';
+      srSpan.textContent = el.textContent;
+      el.insertAdjacentElement('afterend', srSpan);
+    });
+
+    function scrambleText(text) {
+      return text.split('').map(char => {
+        if (char === ' ' || char === '\n') return char;
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+    }
+
+    let scrambleInterval = setInterval(() => {
+      targets.forEach(el => {
+        if (!el.classList.contains('decrypted')) {
+          el.textContent = scrambleText(el.dataset.original);
+        }
+      });
+    }, 80);
+
+    function startDecrypt() {
+      overlay.removeEventListener('click', startDecrypt);
+      overlay.removeEventListener('keydown', handleOverlayKeydown);
+      overlay.style.opacity = '0';
+      overlay.style.backdropFilter = 'blur(0px) grayscale(0%)';
+      overlay.style.pointerEvents = 'none';
+
+      scanline.style.opacity = '1';
+      document.body.classList.remove('locked');
+
+      const duration = 1500;
+      let start = null;
+
+      function animateScan(timestamp) {
+        if (!start) start = timestamp;
+        const progress = timestamp - start;
+        const percentage = Math.min(progress / duration, 1);
+        const docHeight = document.body.scrollHeight;
+        const currentY = percentage * docHeight;
+
+        scanline.style.transform = `translateY(${currentY}px)`;
+
+        targets.forEach(el => {
+          if (!el.classList.contains('decrypted')) {
+            const rect = el.getBoundingClientRect();
+            const absoluteElTop = rect.top + window.scrollY;
+
+            if (currentY > absoluteElTop + (rect.height / 3)) {
+              el.classList.add('decrypted');
+              el.textContent = el.dataset.original;
+            }
+          }
+        });
+
+        if (percentage < 1) {
+          requestAnimationFrame(animateScan);
+        } else {
+          scanline.style.opacity = '0';
+          clearInterval(scrambleInterval);
+          targets.forEach(el => { el.textContent = el.dataset.original; });
+          setTimeout(() => overlay.remove(), 500);
+        }
+      }
+
+      requestAnimationFrame(animateScan);
+    }
+
+    function handleOverlayKeydown(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        startDecrypt();
+      }
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', startDecrypt);
+      overlay.addEventListener('keydown', handleOverlayKeydown);
+    }
+
+    if (firewall && grid) {
+      let breached = false;
+
+      function breach(){
+        if (breached) return;
+        breached = true;
+        
+        // SAVE THE TOKEN TO BROWSER SO THEY DONT HAVE TO DO THIS AGAIN
+        sessionStorage.setItem('site_unlocked', 'true'); 
+
+        firewall.classList.add('flare');
+        setTimeout(() => firewall.classList.add('gone'), 350);
+        setTimeout(() => {
+          firewall.style.display = 'none';
+          grid.classList.add('revealed');
+        }, 900);
+      }
+
+      firewall.addEventListener('click', breach);
+      firewall.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          breach();
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

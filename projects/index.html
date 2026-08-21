@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>projects / suriyah saravanan</title>
+    <meta name="theme-color" content="#4a020f">
+
+    <link rel="icon" type="image/png" href="/s-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --bg-elevated: #111113;
+            --surface: #151517;
+            --border: #241417;
+            --border-hover: #4a1218;
+            --maroon: #3a0d12;
+            --crimson: #4a020f;
+            --crimson-bright: #e0273f;
+            --text: #ece9e6;
+            --text-dim: #8c8a88;
+            --text-faint: #4c4a49;
+            --mono: 'JetBrains Mono', monospace;
+            --display: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        ::selection {
+            background: var(--crimson);
+            color: #fff;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--display);
+            font-size: 18px; 
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            flex: 1;
+        }
+
+      
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            font-family: var(--mono);
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px; 
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text);
+        }
+
+        .title {
+            font-size: 14px; 
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+        }
+
+        .accent-red {
+            color: var(--crimson);
+        }
+
+        
+        /* intro */
+        .intro {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .intro h1 {
+            font-size: clamp(32px, 5vw, 44px); 
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .intro p {
+            color: var(--text-dim);
+            font-size: 18px; 
+            line-height: 1.6;
+        }
+
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        @media (max-width: 640px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        .project-card {
+            background: var(--bg-elevated);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            transition: background 0.25s ease;
+        }
+
+        .project-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--crimson);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            background: var(--surface);
+        }
+
+        .project-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tech-pill {
+            font-family: var(--mono);
+            font-size: 13px; 
+            color: var(--crimson-bright);
+            letter-spacing: 0.05em;
+        }
+
+        .arrow {
+            font-family: var(--mono);
+            color: var(--text-faint);
+            font-size: 16px; 
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .project-card:hover .arrow {
+            transform: translate(3px, -3px);
+            color: var(--crimson-bright);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .project-name {
+            font-size: 22px; 
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        .project-desc {
+            font-size: 16px; 
+            color: var(--text-dim);
+            line-height: 1.55;
+        }
+
+        .card-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: auto;
+        }
+
+        .tag {
+            font-family: var(--mono);
+            font-size: 12px; 
+            color: var(--crimson-bright);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        /* footer */
+        footer {
+            text-align: left;
+            font-family: var(--mono);
+            font-size: 13px; 
+            color: var(--text-faint);
+            letter-spacing: 0.03em;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+    
+        .site-logo {
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            z-index: 1000;
+            transition: transform 0.2s ease;
+        }
+
+        .site-logo img {
+            width: 38px; 
+            height: auto;
+            opacity: 0.85;
+            transition: opacity 0.2s ease;
+        }
+
+        .site-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .site-logo:hover img {
+            opacity: 1;
+        }
+
+        @media (max-width: 1050px) {
+            .site-logo {
+                top: 16px;
+                left: 16px;
+            }
+            .site-logo img {
+                width: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <a href="/" class="site-logo">
+        <img src="/s-transparent.png" alt="suriyah.dev logo">
+    </a>
+  
+    <div class="container">
+        <header>
+            <a href="/" class="back-link">← cd /home</a>
+            <div class="title"><span class="accent-red">port 22</span> / projects</div>
+        </header>
+
+        <section class="intro">
+            <h1>featured projects</h1>
+            <p>a curated collection of security tools, enterprise automation, threat simulations, and software utilities</p>
+        </section>
+
+        <div class="grid">
+
+            <!-- ai pii redactor -->
+            <a class="project-card" href="https://github.com/suriyahs/AI-PII-redactor" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">python / nlp / ocr</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">AI PHI redactor</div>
+                    <div class="project-desc">high-precision document processing engine using computer vision (OCR) and NLP to automate surgical PII/PHI redaction in medical and incident reports</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">spacy</span>
+                    <span class="tag">easyocr</span>
+                    <span class="tag">hipaa-compliance</span>
+                </div>
+            </a>
+
+            <!-- enterprise-active-directory-security-auditor -->
+            <a class="project-card" href="https://github.com/suriyahs/enterprise-active-directory-security-auditor" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">python / ldap</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">enterprise active directory security scanner</div>
+                    <div class="project-desc">desktop security tool automating Active Directory posture assessments, LDAP queries, NTLM inspection, and identity risk reporting</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">active-directory</span>
+                    <span class="tag">iam</span>
+                    <span class="tag">security-audit</span>
+                </div>
+            </a>
+
+            <!-- IAM-sync -->
+            <a class="project-card" href="https://github.com/suriyahs/IAM-sync" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">python / playwright</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">enterprise IAM synchronization utility</div>
+                    <div class="project-desc">identity and access management utility utilizing browser automation to synchronize, validate, and standardize user profiles across SaaS endpoints</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">playwright</span>
+                    <span class="tag">identity-ops</span>
+                    <span class="tag">saas-sync</span>
+                </div>
+            </a>
+            <!-- flare-clips -->
+            <a class="project-card" href="https://github.com/suriyahs/flare-clips" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">cloudflare / linux / bash</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">flare clips: secure media pipeline</div>
+                    <div class="project-desc">automated edge-native clipping pipeline featuring a fedora linux folder-watching daemon, cloudflare S3-compatible R2 storage, and a serverless worker API management dashboard</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">cloudflare-workers</span>
+                    <span class="tag">r2-storage</span>
+                    <span class="tag">bash-automation</span>
+                </div>
+            </a>
+
+            <!-- flare-clip-manager -->
+            <a class="project-card" href="https://github.com/suriyahs/flare-clip-manager" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">vite / javascript / css</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">flare clip manager frontend</div>
+                    <div class="project-desc">web dashboard interface built with Vite and modern CSS to manage gameplay video clips, coordinate cloud storage, and interact with serverless worker APIs</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">frontend-dashboard</span>
+                    <span class="tag">cloudflare-pages</span>
+                    <span class="tag">ui-ux</span>
+                </div>
+            </a>
+            
+            <!-- purple-team-lab -->
+            <a class="project-card" href="https://github.com/suriyahs/purple-team-lab" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">siem / virtualbox</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">purple team homelab</div>
+                    <div class="project-desc">virtualized purple team lab environment integrating Wazuh SIEM/XDR, Kali Linux, and Metasploitable to execute, ingest, and analyze cyberattack vectors</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">wazuh</span>
+                    <span class="tag">kali-linux</span>
+                    <span class="tag">detection-engineering</span>
+                </div>
+            </a>
+
+            <!-- payroll-automation -->
+            <a class="project-card" href="https://github.com/suriyahs/payroll-automation" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">python / openpyxl</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">enterprise payroll sheet automator</div>
+                    <div class="project-desc">operational data utility built for municipal fire rescue services to transform raw payroll exports into standardized, audit-ready financial sheets</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">pandas</span>
+                    <span class="tag">etl-pipeline</span>
+                    <span class="tag">public-safety-it</span>
+                </div>
+            </a>
+
+            <!-- python-game -->
+            <a class="project-card" href="https://github.com/suriyahs/GBDCEI-python-game" target="_blank" rel="noopener">
+                <div class="card-header">
+                    <span class="tech-pill">javascript / skulpt</span>
+                    <span class="arrow">↗</span>
+                </div>
+                <div class="card-body">
+                    <div class="project-name">interactive python learning game for children</div>
+                    <div class="project-desc">browser-based gamified educational platform developed for an entrepreneurship institute to teach core Python programming in an isolated client-side runtime</div>
+                </div>
+                <div class="card-footer">
+                    <span class="tag">skulpt-js</span>
+                    <span class="tag">in-browser-ide</span>
+                    <span class="tag">gamification</span>
+                </div>
+            </a>
+            
+        
+
+        </div>
+
+        <footer>
+            © 2026 suriyah saravanan
+        </footer>
+    </div>
+
+</body>
+</html>

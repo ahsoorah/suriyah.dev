@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>resume / suriyah saravanan</title>
+
+    <link rel="icon" type="image/png" href="/s-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+
+        :root {
+            --bg: #0a0a0b;
+            --bg-elevated: #111113;
+            --surface: #151517;
+            --border: #241417;
+            --border-hover: #4a1218;
+            --maroon: #3a0d12;
+            --crimson: #4a020f;
+            --crimson-bright: #e0273f;
+            --text: #ece9e6;
+            --text-dim: #8c8a88;
+            --text-faint: #4c4a49;
+            --mono: 'JetBrains Mono', monospace;
+            --display: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        ::selection { 
+            background: var(--crimson); 
+            color: #fff; 
+        }
+        .intro {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .intro h1 {
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .intro p {
+            color: var(--text-dim);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--display);
+            font-size: 18px; 
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            font-family: var(--mono);
+        }
+
+        .back-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px; 
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--text);
+        }
+
+        .title {
+            font-size: 14px; 
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+        }
+
+        .accent-red {
+            color: var(--crimson);
+        }
+
+        .btn {
+            background-color: var(--bg-elevated);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            font-family: var(--mono);
+            font-size: 14px; 
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--crimson);
+            background-color: var(--surface);
+            color: var(--text);
+        }
+
+        .viewer-container {
+            width: 100%;
+            flex: 1;
+            min-height: 80vh;
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        iframe {
+            width: 100%;
+            flex: 1;
+            border: none;
+            display: block;
+        }
+
+        .fallback-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 75vh;
+            gap: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        
+        footer {
+            text-align: left;
+            font-family: var(--mono);
+            font-size: 13px; 
+            color: var(--text-faint);
+            letter-spacing: 0.03em;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+
+        
+        .site-logo {
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            z-index: 1000;
+            transition: transform 0.2s ease;
+        }
+
+        .site-logo img {
+            width: 38px; 
+            height: auto;
+            opacity: 0.85;
+            transition: opacity 0.2s ease;
+        }
+
+        .site-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .site-logo:hover img {
+            opacity: 1;
+        }
+
+        @media (max-width: 1050px) {
+            .site-logo {
+                top: 16px;
+                left: 16px;
+            }
+            .site-logo img {
+                width: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+
+    
+    <a href="/" class="site-logo">
+        <img src="/s-transparent.png" alt="suriyah.dev logo">
+    </a>
+
+    <div class="container">
+        <header>
+            <a href="/" class="back-link">← cd /home</a>
+            <div class="title"><span class="accent-red">port 21</span> / resume.pdf</div>
+            <a href="resume.pdf" download="Suriyah_Saravanan_Resume.pdf" class="btn">
+                <span>↓</span> download pdf
+            </a>
+        </header>
+        <section class="intro">
+            <h1>my resume</h1>
+            <p>comprehensive overview of my professional experience, education, and technical certifications</p>
+        </section>
+        <div class="viewer-container">
+            <iframe src="resume.pdf" type="application/pdf">
+                <div class="fallback-view">
+                    <p>your browser does not support embedded pdfs.</p>
+                    <a href="resume.pdf" download="Suriyah_Saravanan_Resume.pdf" class="btn">download pdf here</a>
+                </div>
+            </iframe>
+        </div>
+
+        <footer>
+            © 2026 suriyah saravanan
+        </footer>
+    </div>
+
+</body>
+</html>
